@@ -6,12 +6,11 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-API_KEY = "SUPER_SECRET_API_KEY_12345"  # Snyk should flag this
+API_KEY = "SUPER_SECRET_API_KEY_12345"
 
 def get_user_by_name(username):
     conn = sqlite3.connect("test.db")
     cursor = conn.cursor()
-    # Intentionally vulnerable query
     query = f"SELECT * FROM users WHERE username = '{username}'"
     cursor.execute(query)
     result = cursor.fetchall()
@@ -43,13 +42,11 @@ def load():
 @app.route("/yaml")
 def yaml_load():
     data = request.args.get("data", "a: 1")
-    # Unsafe loader (yaml.load instead of safe_load)
     loaded = yaml.load(data, Loader=yaml.Loader)  # vulnerable usage
     return {"parsed": str(loaded)}
 
 
 if __name__ == "__main__":
-    # Simple DB init to avoid runtime errors
     conn = sqlite3.connect("test.db")
     c = conn.cursor()
     c.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT)")
