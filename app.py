@@ -29,7 +29,6 @@ def user():
 @app.route("/ping")
 def ping():
     ip = request.args.get("ip", "127.0.0.1")
-    # Intentionally dangerous: using user input in shell command
     os.system(f"ping -c 1 {ip}")
     return {"status": "ok"}
 
@@ -38,8 +37,6 @@ def load():
     raw = request.args.get("data", None)
     if not raw:
         return {"error": "no data"}, 400
-
-    # Intentionally insecure: untrusted pickle.loads
     obj = pickle.loads(bytes.fromhex(raw))
     return {"loaded": str(obj)}
 
